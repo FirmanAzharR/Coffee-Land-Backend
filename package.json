@@ -4,7 +4,7 @@
   "description": "task beginer backend",
   "main": "app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "start": "standart --fix && npx nodemon app.js"
   },
   "author": "Firman Azhar Riyadi",
   "license": "ISC",

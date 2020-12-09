@@ -1,12 +1,22 @@
 const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
+const routesNavigation = require('./src/routesNavigation')
 
 const app = express()
 app.use(morgan('dev'))
 app.use(bodyParser.json())
-app.unsubscribe(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.urlencoded({ extended: false }))
 
-app.listen(3000, () => {
-  console.log('xpress app is listening on port 3000')
+app.use('/', routesNavigation)
+
+const product = require('./src/routes/product')
+app.use('/', product)
+
+app.get('*', (req, res) => {
+  res.status(404).send('Path not found')
+})
+
+app.listen(5000, () => {
+  console.log('xpress app is listening on port 5000')
 })

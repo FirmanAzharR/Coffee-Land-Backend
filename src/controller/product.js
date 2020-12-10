@@ -2,7 +2,6 @@ const { getProductModel, getProductCountModel, getProductByIdModel, postProductM
 
 const helper = require('../helper/response')
 const qs = require('querystring')
-const { request } = require('http')
 
 module.exports = {
   getProduct: async (request, response) => {

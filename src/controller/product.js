@@ -1,21 +1,28 @@
-const { getProductModel, getProductCountModel, getProductByIdModel, postProductModel, patchProductModel } = require('../model/product')
+const { getProductModel, getProductCountModel, getProductByIdModel, postProductModel, patchProductModel, deleteProductModel } = require('../model/product')
 
 const helper = require('../helper/response')
 const qs = require('querystring')
+const { request } = require('https')
+const response = require('../helper/response')
 
 module.exports = {
   getProduct: async (request, response) => {
     try {
-      let { page, limit } = request.query
+      let { page, limit, search, sort } = request.query
       page = parseInt(page)
       limit = parseInt(limit)
+      if (search !== '') {
+        page = 1
+      }
+      if (sort === '') {
+        sort = 'product_price'
+      }
       const totalData = await getProductCountModel()
       const totalPage = Math.ceil(totalData / limit)
       const offset = page * limit - limit
-      const result = await getProductModel(limit, offset)
+      const result = await getProductModel(limit, offset, search, sort)
       const prevLink = page > 1 ? qs.stringify({ ...request.query, ...{ page: page - 1 } }) : null
       const nextLink = page < totalPage ? qs.stringify({ ...request.query, ...{ page: page + 1 } }) : null
-
       const pageInfo = {
         page,
         totalPage,
@@ -89,6 +96,21 @@ module.exports = {
       if (checkId.length > 0) {
         const result = await patchProductModel(data, id)
         helper.response(response, 200, `Success Update Product by Id ${id}`, result)
+      } else {
+        helper.response(response, 400, `Product by id ${id} not found`)
+      }
+    } catch (error) {
+      helper.response(response, 400, 'Bad Request', error)
+    }
+  },
+  deleteProduct: async (request, response) => {
+    try {
+      const { id } = request.params
+      const cekId = await getProductByIdModel(id)
+      if (cekId.length > 0) {
+        const data = cekId[0]
+        const result = await deleteProductModel(data, id)
+        helper.response(response, 200, `Data by ID ${id} Deleted Successfully`, result)
       } else {
         helper.response(response, 400, `Product by id ${id} not found`)
       }

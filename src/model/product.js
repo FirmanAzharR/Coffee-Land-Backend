@@ -1,9 +1,9 @@
 const connection = require('../config/mysql')
 
 module.exports = {
-  getProductModel: (limit, offset) => {
+  getProductModel: (limit, offset, search, sort) => {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT*FROM product LIMIT ? OFFSET ?', [limit, offset], (error, result) => {
+      connection.query(`SELECT*FROM product WHERE product_name LIKE '%${search}%' ORDER BY ${sort} ASC LIMIT ${limit} OFFSET ${offset}`, (error, result) => {
         !error ? resolve(result) : reject(new Error(error))
       })
     })
@@ -40,6 +40,21 @@ module.exports = {
   patchProductModel: (data, id) => {
     return new Promise((resolve, reject) => {
       connection.query('UPDATE product SET ? WHERE product_id = ?', [data, id], (error, result) => {
+        if (!error) {
+          const updateResult = {
+            product_id: id,
+            ...data
+          }
+          resolve(updateResult)
+        } else {
+          reject(error)
+        }
+      })
+    })
+  },
+  deleteProductModel: (data, id) => {
+    return new Promise((resolve, reject) => {
+      connection.query(`DELETE FROM product WHERE product_id = ${id}`, (error, result) => {
         if (!error) {
           const updateResult = {
             product_id: id,

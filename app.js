@@ -10,9 +10,6 @@ app.use(bodyParser.urlencoded({ extended: false }))
 
 app.use('/', routesNavigation)
 
-const product = require('./src/routes/product')
-app.use('/', product)
-
 app.get('*', (req, res) => {
   res.status(404).send('Path not found')
 })

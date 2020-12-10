@@ -1,7 +1,8 @@
-const { getProductModel, getProductCountModel, getProductByIdModel } = require('../model/product')
+const { getProductModel, getProductCountModel, getProductByIdModel, postProductModel, patchProductModel } = require('../model/product')
 
 const helper = require('../helper/response')
 const qs = require('querystring')
+const { request } = require('http')
 
 module.exports = {
   getProduct: async (request, response) => {
@@ -26,7 +27,8 @@ module.exports = {
       }
       return helper.response(response, 200, 'Success Get Product', result, pageInfo)
     } catch (error) {
-      return helper.response(response, 400, 'Bad Request', error)
+      console.log(error)
+      // return helper.response(response, 400, 'Bad Request', error)
     }
   },
   getProductById: async (request, response) => {
@@ -40,6 +42,59 @@ module.exports = {
       }
     } catch (error) {
       return helper.response(response, 400, 'Bad Request', error)
+    }
+  },
+  postProduct: async (request, response) => {
+    const { category_id, product_name, product_price, product_discon, product_information, product_img, product_status } = request.body
+    const data = {
+      category_id,
+      product_name,
+      product_price,
+      product_discon,
+      product_information,
+      product_img,
+      product_created_at: new Date(),
+      product_status
+    }
+    try {
+      const result = await postProductModel(data)
+      helper.response(response, 200, 'Success Insert Data', result)
+    } catch (error) {
+      helper.response(response, 400, 'Bad Request', error)
+    }
+  },
+  patchProduct: async (request, response) => {
+    try {
+      const { id } = request.params
+      const {
+        category_id,
+        product_name,
+        product_price,
+        product_discon,
+        product_information,
+        product_img,
+        product_status
+      } = request.body
+
+      const data = {
+        category_id,
+        product_name,
+        product_price,
+        product_discon,
+        product_information,
+        product_img,
+        product_updated_at: new Date(),
+        product_status
+      }
+      const checkId = await getProductByIdModel(id)
+      if (checkId.length > 0) {
+        const result = await patchProductModel(data, id)
+        helper.response(response, 200, `Success Update Product by Id ${id}`, result)
+      } else {
+        helper.response(response, 400, `Product by id ${id} not found`)
+      }
+    } catch (error) {
+      helper.response(response, 400, 'Bad Request', error)
     }
   }
 }

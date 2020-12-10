@@ -21,5 +21,35 @@ module.exports = {
         !error ? resolve(result) : reject(new Error(error))
       })
     })
+  },
+  postProductModel: (data) => {
+    return new Promise((resolve, reject) => {
+      connection.query('INSERT INTO product SET ?', data, (error, result) => {
+        if (!error) {
+          const insertResult = {
+            product_id: result.insertId,
+            ...data
+          }
+          resolve(insertResult)
+        } else {
+          reject(new Error(error))
+        }
+      })
+    })
+  },
+  patchProductModel: (data, id) => {
+    return new Promise((resolve, reject) => {
+      connection.query('UPDATE product SET ? WHERE product_id = ?', [data, id], (error, result) => {
+        if (!error) {
+          const updateResult = {
+            product_id: id,
+            ...data
+          }
+          resolve(updateResult)
+        } else {
+          reject(error)
+        }
+      })
+    })
   }
 }

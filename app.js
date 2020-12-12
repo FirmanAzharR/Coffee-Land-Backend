@@ -2,6 +2,8 @@ const express = require('express')
 const bodyParser = require('body-parser')
 const morgan = require('morgan')
 const cors = require('cors')
+require('dotenv').config()
+
 const routesNavigation = require('./src/routesNavigation')
 
 const app = express()
@@ -24,6 +26,8 @@ app.get('*', (req, res) => {
   res.status(404).send('Path not found')
 })
 
-app.listen(5000, () => {
-  console.log('xpress app is listening on port 5000')
+const port = process.env.PORT
+
+app.listen(port, () => {
+  console.log(`server is listening on port ${port}`)
 })

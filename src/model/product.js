@@ -44,9 +44,12 @@ module.exports = {
       })
     })
   },
-  postDetailProductModel: (data) => {
+  postDetailProductModel: (id, size, price, date, status) => {
     return new Promise((resolve, reject) => {
-      connection.query('INSERT INTO product_details SET ?', [data], (error, result) => {
+      const data = {
+        id_product: id, id_size: size, product_price: price, p_detail_created_at: date, p_detail_status: status
+      }
+      connection.query('INSERT INTO product_details SET ?', data, (error, result) => {
         if (!error) {
           const insertResult = {
             product_id: result.insertId,

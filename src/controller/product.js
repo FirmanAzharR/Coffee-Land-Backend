@@ -74,41 +74,37 @@ module.exports = {
       product_created_at: new Date(),
       product_status
     }
-    const dataDetailProduct = {
-      id_size,
-      product_price,
-      p_detail_status
-    }
+
     try {
+      const resultDetails = []
       const resultProduct = await postProductModel(dataProduct)
-      const newData = { id_product: resultProduct.product_id, ...dataDetailProduct }
-      const resultDetails = await postDetailProductModel(newData)
+      const dt = {
+        id_product: resultProduct.product_id,
+        id_size: JSON.parse('[' + id_size + ']'),
+        product_price: JSON.parse('[' + product_price + ']'),
+        p_detail_created_at: new Date(),
+        p_detail_status
+      }
+      const countDataDetail = dt.id_size.length
+
+      for (let i = 0; i < countDataDetail; i++) {
+        const InsertDetail = await postDetailProductModel(
+          dt.id_product, dt.id_size[i], dt.product_price[i], dt.p_detail_created_at, dt.p_detail_status
+        )
+        resultDetails.push(InsertDetail)
+      }
       helper.response(response, 200, 'Success Insert Data', [resultProduct, resultDetails])
     } catch (error) {
+      console.log(error)
       helper.response(response, 400, 'Bad Request', error)
     }
   },
   patchProduct: async (request, response) => {
     try {
       const { id } = request.params
-      const {
-        category_id,
-        product_name,
-        product_discon,
-        product_information,
-        product_img,
-        product_status
-      } = request.body
+      const { category_id, product_name, product_discon, product_information, product_img, product_status } = request.body
 
-      const data = {
-        category_id,
-        product_name,
-        product_discon,
-        product_information,
-        product_img,
-        product_updated_at: new Date(),
-        product_status
-      }
+      const data = { category_id, product_name, product_discon, product_information, product_img, product_updated_at: new Date(), product_status }
       const checkId = await getProductByIdModel(id)
       if (checkId.length > 0) {
         const result = await patchProductModel(data, id)

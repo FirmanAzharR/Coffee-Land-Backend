@@ -1,7 +1,5 @@
-const response = require('../helper/response')
 const helper = require('../helper/response')
-const { getDataCheckoutModel } = require('../model/checkout')
-const { get } = require('../routes/checkout')
+const { getDataCheckoutModel, postCheckoutModel, postDataCheckoutModel } = require('../model/checkout')
 
 const dataCheckout = []
 
@@ -107,6 +105,31 @@ module.exports = {
     } catch (error) {
       console.log(error)
       return helper.response(response, 400, 'Bad Request', error)
+    }
+  },
+  postDataCheckout: async (request, response) => {
+    try {
+      const { customer_id, transaction_number, address, id_payment } = request.body
+      const transactionData = {
+        customer_id,
+        transaction_number,
+        address,
+        id_payment,
+        transaction_created_at: new Date()
+      }
+      const transactionResult = await postCheckoutModel(transactionData)
+      const transactionId = transactionResult.transaction_id
+      const resultDt = []
+      for (let i = 0; i < dataCheckout.length; i++) {
+        const { id_product_detail, deliveryMethod, quantity } = dataCheckout[i]
+        const objectData = { transaction_id: transactionId, id_product_detail, quantity, deliveryMethod, detail_created_at: new Date() }
+        const detailTransResult = await postDataCheckoutModel(objectData)
+        resultDt.push(detailTransResult)
+      }
+
+      return helper.response(response, 200, 'post Checkout success', [transactionData, resultDt])
+    } catch (error) {
+      console.log(error)
     }
   }
 

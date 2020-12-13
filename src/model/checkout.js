@@ -7,5 +7,26 @@ module.exports = {
         !error ? resolve(result) : reject(new Error(error))
       })
     })
+  },
+  postCheckoutModel: (data) => {
+    return new Promise((resolve, reject) => {
+      connection.query('INSERT INTO transaction SET ?', data, (error, result) => {
+        const insertResult = {
+          transaction_id: result.insertId,
+          ...data
+        }
+        !error ? resolve(insertResult) : reject(new Error(error))
+      })
+    })
+  },
+  postDataCheckoutModel: (data) => {
+    return new Promise((resolve, reject) => {
+      connection.query('INSERT INTO transaction_details SET ?', data, (error, result) => {
+        const insertResult = {
+          ...data
+        }
+        !error ? resolve(insertResult) : reject(new Error(error))
+      })
+    })
   }
 }

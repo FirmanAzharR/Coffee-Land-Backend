@@ -64,7 +64,7 @@ module.exports = {
     }
   },
   postProduct: async (request, response) => {
-    const { category_id, product_name, product_discon, product_information, product_img, product_status, id_size, product_price, p_detail_status } = request.body
+    const { category_id, product_name, product_discon, product_information, product_img, product_status, product_stock, id_size, product_price, p_detail_status } = request.body
     const dataProduct = {
       category_id,
       product_name,
@@ -72,7 +72,8 @@ module.exports = {
       product_information,
       product_img,
       product_created_at: new Date(),
-      product_status
+      product_status,
+      product_stock
     }
 
     try {
@@ -102,9 +103,9 @@ module.exports = {
   patchProduct: async (request, response) => {
     try {
       const { id } = request.params
-      const { category_id, product_name, product_discon, product_information, product_img, product_status } = request.body
+      const { category_id, product_name, product_discon, product_information, product_img, product_status, product_stock } = request.body
 
-      const data = { category_id, product_name, product_discon, product_information, product_img, product_updated_at: new Date(), product_status }
+      const data = { category_id, product_name, product_discon, product_information, product_img, product_updated_at: new Date(), product_status, product_stock }
       const checkId = await getProductByIdModel(id)
       if (checkId.length > 0) {
         const result = await patchProductModel(data, id)

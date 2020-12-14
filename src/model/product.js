@@ -3,7 +3,7 @@ const connection = require('../config/mysql')
 module.exports = {
   getProductModel: (limit, offset, search, sort) => {
     return new Promise((resolve, reject) => {
-      connection.query(`SELECT product.product_id, product.product_name, product_details.product_price FROM product INNER JOIN category ON product.category_id = category.id_category INNER JOIN product_details ON product.product_id = product_details.id_product INNER JOIN size ON product_details.id_size = size.size_id WHERE product.product_name LIKE '%${search}%' GROUP BY product.category_id ORDER BY ${sort} LIMIT ${limit} OFFSET ${offset}`, (error, result) => {
+      connection.query(`SELECT product.product_id, product.product_name, product_details.product_price FROM product INNER JOIN category ON product.category_id = category.id_category INNER JOIN product_details ON product.product_id = product_details.id_product INNER JOIN size ON product_details.id_size = size.size_id WHERE product.product_name LIKE '%${search}%' GROUP BY product.product_id ORDER BY ${sort} LIMIT ${limit} OFFSET ${offset}`, (error, result) => {
         !error ? resolve(result) : reject(new Error(error))
       })
     })

@@ -1,5 +1,6 @@
 const helper = require('../helper/response')
-const { getDataCheckoutModel, postCheckoutModel, postDataCheckoutModel } = require('../model/checkout')
+const { getDataCheckoutModel, postCheckoutModel, postDataCheckoutModel, updateStockModel } = require('../model/checkout')
+const { getDetailProductByIdModel } = require('../model/product')
 
 const dataCheckout = []
 
@@ -7,6 +8,7 @@ module.exports = {
   getCheckout: async (request, response) => {
     try {
       const newOrderData = []
+      let subtotal = 0
       dataCheckout.push(request.body)
       // hanya untuk menampilkan data secara lengkap
       for (let i = 0; i < dataCheckout.length; i++) {
@@ -21,9 +23,10 @@ module.exports = {
           deliveryMethod: dataCheckout[i].deliveryMethod
         }
         newOrderData.push(data)
+        subtotal = subtotal + data.product_price
       }
       // end
-      return helper.response(response, 200, 'Success Get Checkout', newOrderData)
+      return helper.response(response, 200, 'Success Get Checkout', [newOrderData, { subtotal: subtotal }])
     } catch (error) {
       console.log(error)
       return helper.response(response, 400, 'Bad Request', error)
@@ -53,7 +56,6 @@ module.exports = {
           quantity: dataCheckout[i].quantity,
           product_price: product_price * dataCheckout[i].quantity,
           deliveryMethod: dataCheckout[i].deliveryMethod
-
         }
         showData.push(data)
       }
@@ -124,6 +126,8 @@ module.exports = {
         const { id_product_detail, deliveryMethod, quantity } = dataCheckout[i]
         const objectData = { transaction_id: transactionId, id_product_detail, quantity, deliveryMethod, detail_created_at: new Date() }
         const detailTransResult = await postDataCheckoutModel(objectData)
+        const getProductId = await getDetailProductByIdModel(objectData.id_product_detail)
+        const updateStok = await updateStockModel(getProductId[0].product_id, objectData.quantity)
         resultDt.push(detailTransResult)
       }
 

@@ -28,5 +28,12 @@ module.exports = {
         !error ? resolve(insertResult) : reject(new Error(error))
       })
     })
+  },
+  updateStockModel: (id, stock) => {
+    return new Promise((resolve, reject) => {
+      connection.query(`UPDATE product SET product_stock=product_stock-${stock} WHERE product_id =${id}`, (error, result) => {
+        !error ? resolve(result) : reject(new Error(error))
+      })
+    })
   }
 }

@@ -25,7 +25,7 @@ Express.js v4.x and Node.js
 5. Create a database with the name #nama_database, and Import file sql to phpmyadmin
 6. Open Postman desktop application or Chrome web app extension that has installed
 7. Choose HTTP Method and enter request url.(ex. localhost:5000/)
-8. You can see all the end point [here]https://documenter.getpostman.com/view/13758133/TVsoHAnb)
+8. You can see all the end point [here](https://documenter.getpostman.com/view/13758133/TVsoHAnb)
 
 ## Set up .env file
 

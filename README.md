@@ -4,7 +4,7 @@
 
 ## Project
 
-CoffeeLand Rest API ini dibuat untuk melengkapi backend untuk project Coffee Shop - (CoffeeLand)
+The CoffeeLand Rest API was created to complement the backend for the Coffee Shop project - (CoffeeLand)
 
 ## Built With
 

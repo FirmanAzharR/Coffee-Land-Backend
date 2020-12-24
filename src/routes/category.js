@@ -4,4 +4,4 @@ module.exports = router
 
 const { getCategory } = require('../controller/category')
 
-router.get('/', authorization, isAdmin, getCategory)
+router.get('/', authorization, getCategory)

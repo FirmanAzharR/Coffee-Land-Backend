@@ -1,6 +1,6 @@
 const multer = require('multer')
 const helper = require('../helper/response')
-
+// const fs = require('fs')
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
     cb(null, './upload')
@@ -41,5 +41,13 @@ const uploadFilter = (req, res, next) => {
     // Everything went fine.
   })
 }
+
+// const deleteImg = (req, res, next) => {
+//   fs.unlink('sample11.txt', function (err) {
+//     if (err) throw err
+//     // if no error, file has been deleted successfully
+//     console.log('File deleted!')
+//   })
+// }
 
 module.exports = uploadFilter

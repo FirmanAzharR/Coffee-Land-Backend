@@ -12,7 +12,7 @@ module.exports = {
       const encryptPassword = bcrypt.hashSync(user_password, salt)
 
       const setData = {
-        user_role: 1,
+        user_role: 2,
         user_name,
         user_email,
         user_phone,
@@ -61,7 +61,7 @@ module.exports = {
           const result = { ...payload, token }
           return helper.response(response, 200, 'success login', result)
         } else {
-          return helper.response(response, 400, 'wrong registered')
+          return helper.response(response, 400, 'wrong password')
         }
       } else {
         return helper.response(response, 400, 'email not registered')

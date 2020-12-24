@@ -13,6 +13,7 @@ const {
 
 const helper = require('../helper/response')
 const qs = require('querystring')
+const fs = require('fs')
 const redis = require('redis')
 const client = redis.createClient()
 
@@ -30,7 +31,13 @@ module.exports = {
       }
       let totalData
       const offset = page * limit - limit
-      const result = await getProductModel(limit, offset, category, search, sort)
+      const result = await getProductModel(
+        limit,
+        offset,
+        category,
+        search,
+        sort
+      )
       if ((category === '') & (search === '')) {
         totalData = await getProductCountModel()
       } else {
@@ -39,11 +46,13 @@ module.exports = {
       const totalPage = Math.ceil(totalData / limit)
 
       const prevLink =
-    page > 1 ? qs.stringify({ ...request.query, ...{ page: page - 1 } }) : null
+        page > 1
+          ? qs.stringify({ ...request.query, ...{ page: page - 1 } })
+          : null
       const nextLink =
-    page < totalPage
-      ? qs.stringify({ ...request.query, ...{ page: page + 1 } })
-      : null
+        page < totalPage
+          ? qs.stringify({ ...request.query, ...{ page: page + 1 } })
+          : null
       const pageInfo = {
         page,
         totalPage,
@@ -57,7 +66,11 @@ module.exports = {
         pageInfo
       }
 
-      client.setex(`getproduct:${JSON.stringify(request.query)}`, 3600, JSON.stringify(newData))
+      client.setex(
+        `getproduct:${JSON.stringify(request.query)}`,
+        3600,
+        JSON.stringify(newData)
+      )
 
       console.log(totalData)
       return helper.response(
@@ -78,7 +91,12 @@ module.exports = {
       const result = await getProductByIdModel(id)
       if (result.length > 0) {
         client.setex(`getproductbyid:${id}`, 3600, JSON.stringify(result))
-        return helper.response(response, 200, 'Success Get Product By Id', result)
+        return helper.response(
+          response,
+          200,
+          'Success Get Product By Id',
+          result
+        )
       } else {
         return helper.response(response, 404, `Product by id ${id} Not Found`)
       }
@@ -91,7 +109,12 @@ module.exports = {
       const { id } = request.params
       const result = await getDetailProductByIdModel(id)
       if (result.length > 0) {
-        return helper.response(response, 200, 'Success Get Product By Id', result)
+        return helper.response(
+          response,
+          200,
+          'Success Get Product By Id',
+          result
+        )
       } else {
         return helper.response(response, 404, `Product by id ${id} Not Found`)
       }
@@ -123,7 +146,6 @@ module.exports = {
         product_status,
         product_stock
       }
-      console.log(dataProduct)
       const resultDetails = []
       const resultProduct = await postProductModel(dataProduct)
       const dt = {
@@ -163,25 +185,41 @@ module.exports = {
         product_name,
         product_discon,
         product_information,
-        product_img,
         product_status,
         product_stock
       } = request.body
 
-      const data = {
+      let dataProduct = {
         category_id,
         product_name,
         product_discon,
         product_information,
-        product_img,
-        product_updated_at: new Date(),
+        product_img: request.file === undefined ? '' : request.file.filename,
+        product_created_at: new Date(),
         product_status,
         product_stock
       }
       const checkId = await getProductByIdModel(id)
+
       if (checkId.length > 0) {
-        const result = await patchProductModel(data, id)
-        helper.response(response, 200, `Success Update Product by Id ${id}`, result)
+        if (dataProduct.product_img) {
+          fs.unlink(`./upload/${checkId[0].product_img}`, function (err) {
+            if (err) {
+              throw err
+            }
+            console.log('Image Update Old File deleted!')
+          })
+        } else {
+          delete dataProduct.product_img
+          console.log('Update without img!')
+        }
+        const result = await patchProductModel(dataProduct, id)
+        helper.response(
+          response,
+          200,
+          `Success Update Product by Id ${id}`,
+          result
+        )
       } else {
         helper.response(response, 400, `Product by id ${id} not found`)
       }
@@ -203,7 +241,12 @@ module.exports = {
       const checkId = await getDetailProductByIdModel(id)
       if (checkId.length > 0) {
         const result = await patchDetailProductModel(data, id)
-        helper.response(response, 200, `Success Update Product by Id ${id}`, result)
+        helper.response(
+          response,
+          200,
+          `Success Update Product by Id ${id}`,
+          result
+        )
       } else {
         helper.response(response, 400, `Product by id ${id} not found`)
       }
@@ -217,13 +260,21 @@ module.exports = {
       const cekId = await getProductByIdModel(id)
       if (cekId.length > 0) {
         const data = cekId[0]
+        if (data.product_img !== '') {
+          fs.unlink(`./upload/${data.product_img}`, function (err) {
+            if (err) {
+              throw err
+            }
+            console.log('File deleted!')
+          })
+        }
         const deleteDetail = await deleteDetailProductModel(id)
         const result = await deleteProductModel(data, id)
         helper.response(
           response,
           200,
-     `Data by ID ${id} Deleted Successfully`,
-     result
+          `Data by ID ${id} Deleted Successfully`,
+          result
         )
       } else {
         helper.response(response, 400, `Product by id ${id} not found`)

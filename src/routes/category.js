@@ -1,6 +1,7 @@
 const router = require('express').Router()
+const { authorization, isAdmin } = require('../middleware/auth')
 module.exports = router
 
 const { getCategory } = require('../controller/category')
 
-router.get('/', getCategory)
+router.get('/', authorization, isAdmin, getCategory)

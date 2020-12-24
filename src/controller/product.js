@@ -1,12 +1,25 @@
-const { getProductModel, getProductCountModel, getProductByIdModel, getDetailProductByIdModel, postProductModel, postDetailProductModel, patchProductModel, patchDetailProductModel, deleteProductModel, deleteDetailProductModel } = require('../model/product')
+const {
+  getProductModel,
+  getProductCountModel,
+  getProductByIdModel,
+  getDetailProductByIdModel,
+  postProductModel,
+  postDetailProductModel,
+  patchProductModel,
+  patchDetailProductModel,
+  deleteProductModel,
+  deleteDetailProductModel
+} = require('../model/product')
 
 const helper = require('../helper/response')
 const qs = require('querystring')
+const redis = require('redis')
+const client = redis.createClient()
 
 module.exports = {
   getProduct: async (request, response) => {
     try {
-      let { page, limit, search, sort } = request.query
+      let { page, limit, category, search, sort } = request.query
       page = parseInt(page)
       limit = parseInt(limit)
       if (search !== '') {
@@ -15,12 +28,22 @@ module.exports = {
       if (sort === '') {
         sort = 'product.category_id ASC'
       }
-      const totalData = await getProductCountModel()
-      const totalPage = Math.ceil(totalData / limit)
+      let totalData
       const offset = page * limit - limit
-      const result = await getProductModel(limit, offset, search, sort)
-      const prevLink = page > 1 ? qs.stringify({ ...request.query, ...{ page: page - 1 } }) : null
-      const nextLink = page < totalPage ? qs.stringify({ ...request.query, ...{ page: page + 1 } }) : null
+      const result = await getProductModel(limit, offset, category, search, sort)
+      if ((category === '') & (search === '')) {
+        totalData = await getProductCountModel()
+      } else {
+        totalData = result.length
+      }
+      const totalPage = Math.ceil(totalData / limit)
+
+      const prevLink =
+    page > 1 ? qs.stringify({ ...request.query, ...{ page: page - 1 } }) : null
+      const nextLink =
+    page < totalPage
+      ? qs.stringify({ ...request.query, ...{ page: page + 1 } })
+      : null
       const pageInfo = {
         page,
         totalPage,
@@ -29,9 +52,21 @@ module.exports = {
         nextLink: nextLink && `http://localhost:5000/product?${nextLink}`,
         prevLink: prevLink && `http://localhost:5000/product?${prevLink}`
       }
-      console.log(search)
-      console.log(sort)
-      return helper.response(response, 200, 'Success Get Product', result, pageInfo)
+      const newData = {
+        result,
+        pageInfo
+      }
+
+      client.setex(`getproduct:${JSON.stringify(request.query)}`, 3600, JSON.stringify(newData))
+
+      console.log(totalData)
+      return helper.response(
+        response,
+        200,
+        'Success Get Product',
+        result,
+        pageInfo
+      )
     } catch (error) {
       console.log(error)
       return helper.response(response, 400, 'Bad Request', error)
@@ -42,6 +77,7 @@ module.exports = {
       const { id } = request.params
       const result = await getProductByIdModel(id)
       if (result.length > 0) {
+        client.setex(`getproductbyid:${id}`, 3600, JSON.stringify(result))
         return helper.response(response, 200, 'Success Get Product By Id', result)
       } else {
         return helper.response(response, 404, `Product by id ${id} Not Found`)
@@ -64,19 +100,30 @@ module.exports = {
     }
   },
   postProduct: async (request, response) => {
-    const { category_id, product_name, product_discon, product_information, product_img, product_status, product_stock, id_size, product_price, p_detail_status } = request.body
-    const dataProduct = {
-      category_id,
-      product_name,
-      product_discon,
-      product_information,
-      product_img,
-      product_created_at: new Date(),
-      product_status,
-      product_stock
-    }
-
     try {
+      const {
+        category_id,
+        product_name,
+        product_discon,
+        product_information,
+        product_status,
+        product_stock,
+        id_size,
+        product_price,
+        p_detail_status
+      } = request.body
+
+      const dataProduct = {
+        category_id,
+        product_name,
+        product_discon,
+        product_information,
+        product_img: request.file === undefined ? '' : request.file.filename,
+        product_created_at: new Date(),
+        product_status,
+        product_stock
+      }
+      console.log(dataProduct)
       const resultDetails = []
       const resultProduct = await postProductModel(dataProduct)
       const dt = {
@@ -86,15 +133,23 @@ module.exports = {
         p_detail_created_at: new Date(),
         p_detail_status
       }
-      const countDataDetail = dt.id_size.length
 
+      const countDataDetail = dt.id_size.length
+      console.log(countDataDetail)
       for (let i = 0; i < countDataDetail; i++) {
         const InsertDetail = await postDetailProductModel(
-          dt.id_product, dt.id_size[i], dt.product_price[i], dt.p_detail_created_at, dt.p_detail_status
+          dt.id_product,
+          dt.id_size[i],
+          dt.product_price[i],
+          dt.p_detail_created_at,
+          dt.p_detail_status
         )
         resultDetails.push(InsertDetail)
       }
-      helper.response(response, 200, 'Success Insert Data', [resultProduct, resultDetails])
+      helper.response(response, 200, 'Success Insert Data', [
+        resultProduct,
+        resultDetails
+      ])
     } catch (error) {
       console.log(error)
       helper.response(response, 400, 'Bad Request', error)
@@ -103,9 +158,26 @@ module.exports = {
   patchProduct: async (request, response) => {
     try {
       const { id } = request.params
-      const { category_id, product_name, product_discon, product_information, product_img, product_status, product_stock } = request.body
+      const {
+        category_id,
+        product_name,
+        product_discon,
+        product_information,
+        product_img,
+        product_status,
+        product_stock
+      } = request.body
 
-      const data = { category_id, product_name, product_discon, product_information, product_img, product_updated_at: new Date(), product_status, product_stock }
+      const data = {
+        category_id,
+        product_name,
+        product_discon,
+        product_information,
+        product_img,
+        product_updated_at: new Date(),
+        product_status,
+        product_stock
+      }
       const checkId = await getProductByIdModel(id)
       if (checkId.length > 0) {
         const result = await patchProductModel(data, id)
@@ -120,11 +192,7 @@ module.exports = {
   patchDetailProduct: async (request, response) => {
     try {
       const { id } = request.params
-      const {
-        id_size,
-        product_price,
-        p_detail_status
-      } = request.body
+      const { id_size, product_price, p_detail_status } = request.body
 
       const data = {
         id_size,
@@ -151,7 +219,12 @@ module.exports = {
         const data = cekId[0]
         const deleteDetail = await deleteDetailProductModel(id)
         const result = await deleteProductModel(data, id)
-        helper.response(response, 200, `Data by ID ${id} Deleted Successfully`, result)
+        helper.response(
+          response,
+          200,
+     `Data by ID ${id} Deleted Successfully`,
+     result
+        )
       } else {
         helper.response(response, 400, `Product by id ${id} not found`)
       }

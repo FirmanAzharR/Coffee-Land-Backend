@@ -1,5 +1,10 @@
 const helper = require('../helper/response')
-const { getDataCheckoutModel, postCheckoutModel, postDataCheckoutModel, updateStockModel } = require('../model/checkout')
+const {
+  getDataCheckoutModel,
+  postCheckoutModel,
+  postDataCheckoutModel,
+  updateStockModel
+} = require('../model/checkout')
 const { getDetailProductByIdModel } = require('../model/product')
 
 const dataCheckout = []
@@ -12,8 +17,15 @@ module.exports = {
       dataCheckout.push(request.body)
       // hanya untuk menampilkan data secara lengkap
       for (let i = 0; i < dataCheckout.length; i++) {
-        const result = await getDataCheckoutModel(dataCheckout[i].id_product_detail)
-        const { id_product_detail, product_name, size_name, product_price } = result[0]
+        const result = await getDataCheckoutModel(
+          dataCheckout[i].id_product_detail
+        )
+        const {
+          id_product_detail,
+          product_name,
+          size_name,
+          product_price
+        } = result[0]
         const data = {
           id_product_detail,
           product_name,
@@ -26,7 +38,10 @@ module.exports = {
         subtotal = subtotal + data.product_price
       }
       // end
-      return helper.response(response, 200, 'Success Get Checkout', [newOrderData, { subtotal: subtotal }])
+      return helper.response(response, 200, 'Success Get Checkout', [
+        newOrderData,
+        { subtotal: subtotal }
+      ])
     } catch (error) {
       console.log(error)
       return helper.response(response, 400, 'Bad Request', error)
@@ -47,8 +62,15 @@ module.exports = {
 
       // hanya untuk menampilkan data secara lengkap
       for (let i = 0; i < dataCheckout.length; i++) {
-        const result = await getDataCheckoutModel(dataCheckout[i].id_product_detail)
-        const { id_product_detail, product_name, size_name, product_price } = result[0]
+        const result = await getDataCheckoutModel(
+          dataCheckout[i].id_product_detail
+        )
+        const {
+          id_product_detail,
+          product_name,
+          size_name,
+          product_price
+        } = result[0]
         const data = {
           id_product_detail,
           product_name,
@@ -61,7 +83,12 @@ module.exports = {
       }
       // end
 
-      return helper.response(response, 200, 'Current Item on Checkout', showData)
+      return helper.response(
+        response,
+        200,
+        'Current Item on Checkout',
+        showData
+      )
     } catch (error) {
       console.log(error)
       return helper.response(response, 400, 'Bad Request', error)
@@ -89,8 +116,15 @@ module.exports = {
       // console.log(dataCheckout)
       // hanya untuk menampilkan data secara lengkap
       for (let i = 0; i < dataCheckout.length; i++) {
-        const result = await getDataCheckoutModel(dataCheckout[i].id_product_detail)
-        const { id_product_detail, product_name, size_name, product_price } = result[0]
+        const result = await getDataCheckoutModel(
+          dataCheckout[i].id_product_detail
+        )
+        const {
+          id_product_detail,
+          product_name,
+          size_name,
+          product_price
+        } = result[0]
         const data = {
           id_product_detail,
           product_name,
@@ -98,12 +132,16 @@ module.exports = {
           quantity: dataCheckout[i].quantity,
           product_price: product_price * dataCheckout[i].quantity,
           deliveryMethod: dataCheckout[i].deliveryMethod
-
         }
         showData.push(data)
       }
       // end
-      return helper.response(response, 200, 'Current Item on Checkout', showData)
+      return helper.response(
+        response,
+        200,
+        'Current Item on Checkout',
+        showData
+      )
     } catch (error) {
       console.log(error)
       return helper.response(response, 400, 'Bad Request', error)
@@ -111,7 +149,12 @@ module.exports = {
   },
   postDataCheckout: async (request, response) => {
     try {
-      const { customer_id, transaction_number, address, id_payment } = request.body
+      const {
+        customer_id,
+        transaction_number,
+        address,
+        id_payment
+      } = request.body
       const transactionData = {
         customer_id,
         transaction_number,
@@ -124,17 +167,30 @@ module.exports = {
       const resultDt = []
       for (let i = 0; i < dataCheckout.length; i++) {
         const { id_product_detail, deliveryMethod, quantity } = dataCheckout[i]
-        const objectData = { transaction_id: transactionId, id_product_detail, quantity, deliveryMethod, detail_created_at: new Date() }
+        const objectData = {
+          transaction_id: transactionId,
+          id_product_detail,
+          quantity,
+          deliveryMethod,
+          detail_created_at: new Date()
+        }
         const detailTransResult = await postDataCheckoutModel(objectData)
-        const getProductId = await getDetailProductByIdModel(objectData.id_product_detail)
-        const updateStok = await updateStockModel(getProductId[0].product_id, objectData.quantity)
+        const getProductId = await getDetailProductByIdModel(
+          objectData.id_product_detail
+        )
+        const updateStok = await updateStockModel(
+          getProductId[0].product_id,
+          objectData.quantity
+        )
         resultDt.push(detailTransResult)
       }
 
-      return helper.response(response, 200, 'post Checkout success', [transactionData, resultDt])
+      return helper.response(response, 200, 'post Checkout success', [
+        transactionData,
+        resultDt
+      ])
     } catch (error) {
       console.log(error)
     }
   }
-
 }

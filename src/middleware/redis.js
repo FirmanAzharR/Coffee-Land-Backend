@@ -91,5 +91,45 @@ module.exports = {
         next()
       }
     })
+  },
+  getTransactionRedis: (_request, response, next) => {
+    client.get('gettransaction', (error, result) => {
+      if (!error && result != null) {
+        const newResult = JSON.parse(result)
+        console.log('data ada di redis')
+        return helper.response(response, 200, 'success get cupon', newResult)
+      } else {
+        console.log('data tidak ada di redis')
+        next()
+      }
+    })
+  },
+  getTransactionByIdRedis: (request, response, next) => {
+    const { id } = request.params
+    client.get(`gettransaction:${id}`, (error, result) => {
+      if (!error && result != null) {
+        console.log('data ada di redis')
+        return helper.response(
+          response,
+          200,
+          'success get coupon by id',
+          JSON.parse(result)
+        )
+      } else {
+        console.log('data tidak ada di redis')
+        next()
+      }
+    })
+  },
+  clearTransactionRedis: (request, response, next) => {
+    client.keys('gettransaction*', (_error, result) => {
+      console.log(result)
+      if (result.length > 0) {
+        result.forEach((value) => {
+          client.del(value)
+        })
+      }
+      next()
+    })
   }
 }

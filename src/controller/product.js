@@ -203,12 +203,15 @@ module.exports = {
 
       if (checkId.length > 0) {
         if (dataProduct.product_img) {
-          fs.unlink(`./upload/${checkId[0].product_img}`, function (err) {
-            if (err) {
-              throw err
+          fs.unlink(
+            `./upload/product/${checkId[0].product_img}`,
+            function (err) {
+              if (err) {
+                console.log('image')
+              }
+              console.log('Image Update Old File deleted!')
             }
-            console.log('Image Update Old File deleted!')
-          })
+          )
         } else {
           delete dataProduct.product_img
           console.log('Update without img!')
@@ -261,9 +264,9 @@ module.exports = {
       if (cekId.length > 0) {
         const data = cekId[0]
         if (data.product_img !== '') {
-          fs.unlink(`./upload/${data.product_img}`, function (err) {
+          fs.unlink(`./upload/product/${data.product_img}`, function (err) {
             if (err) {
-              throw err
+              console.log('no image on directory')
             }
             console.log('File deleted!')
           })

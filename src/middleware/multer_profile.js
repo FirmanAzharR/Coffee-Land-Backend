@@ -3,7 +3,7 @@ const helper = require('../helper/response')
 // const fs = require('fs')
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-    cb(null, './upload/product')
+    cb(null, './upload/profile')
   },
   filename: function (req, file, cb) {
     console.log(file)
@@ -24,7 +24,7 @@ const limits = {
   fileSize: 1 * 1024 * 1024 // 1 MB (max file size)
 }
 
-const upload = multer({ storage, limits, fileFilter }).single('product_img')
+const upload = multer({ storage, limits, fileFilter }).single('user_img')
 
 const uploadFilter = (req, res, next) => {
   upload(req, res, function (err) {
@@ -40,13 +40,5 @@ const uploadFilter = (req, res, next) => {
     // Everything went fine.
   })
 }
-
-// const deleteImg = (req, res, next) => {
-//   fs.unlink('sample11.txt', function (err) {
-//     if (err) throw err
-//     // if no error, file has been deleted successfully
-//     console.log('File deleted!')
-//   })
-// }
 
 module.exports = uploadFilter

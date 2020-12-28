@@ -9,7 +9,7 @@ module.exports = {
       jwt.verify(token, 'secret', (error, result) => {
         if (
           (error && error.name === 'JsonWebTokenError') ||
-     (error && error.name === 'TokenExpiredError')
+          (error && error.name === 'TokenExpiredError')
         ) {
           console.log(error)
           return helper.response(response, 400, error.message)
@@ -23,7 +23,7 @@ module.exports = {
     }
   },
   isAdmin: (request, response, next) => {
-    // console.log(request.decodeToken.user_role)
+    console.log(request.decodeToken.user_role)
     if (request.decodeToken.user_role > 1) {
       return helper.response(response, 400, 'You are not admin!')
     } else {

@@ -131,5 +131,49 @@ module.exports = {
       }
       next()
     })
+  },
+  getCategoryRedis: (request, response, next) => {
+    client.get('getcategory', (error, result) => {
+      if (!error && result != null) {
+        console.log('data ada di redis')
+        return helper.response(
+          response,
+          200,
+          'success get profile',
+          JSON.parse(result)
+        )
+      } else {
+        console.log('data tidak ada di redis')
+        next()
+      }
+    })
+  },
+  getProfileRedis: (request, response, next) => {
+    const { id } = request.params
+    client.get(`getprofile:${id}`, (error, result) => {
+      if (!error && result != null) {
+        console.log('data ada di redis')
+        return helper.response(
+          response,
+          200,
+          'success get profile',
+          JSON.parse(result)
+        )
+      } else {
+        console.log('data tidak ada di redis')
+        next()
+      }
+    })
+  },
+  clearProfileRedis: (request, response, next) => {
+    client.keys('getprofile*', (_error, result) => {
+      console.log(result)
+      if (result.length > 0) {
+        result.forEach((value) => {
+          client.del(value)
+        })
+      }
+      next()
+    })
   }
 }

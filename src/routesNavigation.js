@@ -6,6 +6,7 @@ const checkout = require('./routes/checkout')
 const transaction = require('./routes/transaction')
 const user = require('./routes/user')
 const profile = require('./routes/profile')
+const dashboard = require('./routes/dashboard')
 
 router.use('/user', user)
 router.use('/product', product)
@@ -14,5 +15,6 @@ router.use('/coupon', coupon)
 router.use('/checkout', checkout)
 router.use('/transaction', transaction)
 router.use('/profile', profile)
+router.use('/dashboard', dashboard)
 
 module.exports = router

@@ -8,7 +8,7 @@ const {
 const { getDetailProductByIdModel } = require('../model/product')
 
 const dataCheckout = []
-
+let subTotalHarga = 0
 module.exports = {
   getCheckout: async (request, response) => {
     try {
@@ -36,7 +36,9 @@ module.exports = {
         }
         newOrderData.push(data)
         subtotal = subtotal + data.product_price
+        subTotalHarga = subtotal
       }
+      console.log(subTotalHarga)
       // end
       return helper.response(response, 200, 'Success Get Checkout', [
         newOrderData,
@@ -160,6 +162,7 @@ module.exports = {
         transaction_number,
         address,
         id_payment,
+        subtotal: subTotalHarga,
         transaction_created_at: new Date()
       }
       const transactionResult = await postCheckoutModel(transactionData)

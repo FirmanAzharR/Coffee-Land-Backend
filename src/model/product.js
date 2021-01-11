@@ -4,10 +4,10 @@ module.exports = {
   getProductModel: (limit, offset, category, search, sort) => {
     return new Promise((resolve, reject) => {
       connection.query(
-    `SELECT product.product_id,  product.category_id,product.product_name,product.product_discon, product_details.product_price FROM product INNER JOIN category ON product.category_id = category.id_category INNER JOIN product_details ON product.product_id = product_details.id_product INNER JOIN size ON product_details.id_size = size.size_id WHERE product.category_id LIKE '%${category}%' AND product.product_name LIKE '%${search}%' GROUP BY product.product_id ORDER BY ${sort} LIMIT ${limit} OFFSET ${offset}`,
-    (error, result) => {
-      !error ? resolve(result) : reject(new Error(error))
-    }
+        `SELECT product.product_id,product.category_id,product.product_name,product.product_discon, product_img, product_details.product_price FROM product INNER JOIN category ON product.category_id = category.id_category INNER JOIN product_details ON product.product_id = product_details.id_product INNER JOIN size ON product_details.id_size = size.size_id WHERE product.category_id LIKE '%${category}%' AND product.product_name LIKE '%${search}%' GROUP BY product.product_id ORDER BY ${sort} LIMIT ${limit} OFFSET ${offset}`,
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
       )
     })
   },
@@ -24,20 +24,20 @@ module.exports = {
   getProductByIdModel: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-    `SELECT*FROM product INNER JOIN category ON product.category_id = category.id_category INNER JOIN product_details ON product.product_id = product_details.id_product INNER JOIN size ON product_details.id_size = size.size_id WHERE product.product_id = ${id}`,
-    (error, result) => {
-      !error ? resolve(result) : reject(new Error(error))
-    }
+        `SELECT*FROM product INNER JOIN category ON product.category_id = category.id_category WHERE product.product_id = ${id}`,
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
       )
     })
   },
   getDetailProductByIdModel: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-    `SELECT product.product_id,product.category_id,product.product_name, product_details.id_size, size.size_name ,product_details.product_price FROM product INNER JOIN category ON product.category_id = category.id_category INNER JOIN product_details ON product.product_id = product_details.id_product INNER JOIN size ON product_details.id_size = size.size_id WHERE product_details.id_product_detail = ${id}`,
-    (error, result) => {
-      !error ? resolve(result) : reject(new Error(error))
-    }
+        `SELECT*FROM product_details INNER JOIN size ON product_details.id_size = size.size_id WHERE product_details.id_product = ${id}`,
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
       )
     })
   },
@@ -123,32 +123,32 @@ module.exports = {
   deleteProductModel: (data, id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-    `DELETE FROM product WHERE product_id = ${id}`,
-    (error, result) => {
-      if (!error) {
-        const updateResult = {
-          product_id: id,
-          ...data
+        `DELETE FROM product WHERE product_id = ${id}`,
+        (error, result) => {
+          if (!error) {
+            const updateResult = {
+              product_id: id,
+              ...data
+            }
+            resolve(updateResult)
+          } else {
+            reject(error)
+          }
         }
-        resolve(updateResult)
-      } else {
-        reject(error)
-      }
-    }
       )
     })
   },
   deleteDetailProductModel: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-    `DELETE FROM product_details WHERE id_product = ${id}`,
-    (error, result) => {
-      if (!error) {
-        resolve(result)
-      } else {
-        reject(error)
-      }
-    }
+        `DELETE FROM product_details WHERE id_product = ${id}`,
+        (error, result) => {
+          if (!error) {
+            resolve(result)
+          } else {
+            reject(error)
+          }
+        }
       )
     })
   }

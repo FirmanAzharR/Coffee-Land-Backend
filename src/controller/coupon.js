@@ -42,8 +42,8 @@ module.exports = {
   },
   postCoupon: async (request, response) => {
     const {
+      coupon_name,
       coupon_code,
-      product_id,
       coupon_discon,
       cupon_min,
       cupon_max,
@@ -54,8 +54,8 @@ module.exports = {
     } = request.body
 
     const data = {
+      coupon_name,
       coupon_code,
-      product_id,
       coupon_discon,
       cupon_min,
       cupon_max,
@@ -68,11 +68,9 @@ module.exports = {
     }
 
     try {
-      //console.log(data)
       const result = await postCouponByIdModel(data)
       helper.response(response, 200, 'coupon inserted succesfully', result)
     } catch (error) {
-      console.log(error)
       helper.response(response, 400, 'coupon not inserted', error)
     }
   },
@@ -111,8 +109,8 @@ module.exports = {
   },
   patchCoupon: async (request, response) => {
     const {
+      coupon_name,
       coupon_code,
-      product_id,
       coupon_discon,
       cupon_min,
       cupon_max,
@@ -123,8 +121,8 @@ module.exports = {
     } = request.body
 
     const data = {
+      coupon_name,
       coupon_code,
-      product_id,
       coupon_discon,
       cupon_min,
       cupon_max,
@@ -143,15 +141,17 @@ module.exports = {
       if (cekCoupon.length > 0) {
         //console.log(cekCoupon[0].coupon_img)
         if (data.coupon_img) {
-          fs.unlink(
-            `./upload/coupon/${cekCoupon[0].coupon_img}`,
-            function (err) {
-              if (err) {
-                console.log('image')
+          if (cekCoupon[0].coupon_img !== data.coupon_img) {
+            fs.unlink(
+              `./upload/coupon/${cekCoupon[0].coupon_img}`,
+              function (err) {
+                if (err) {
+                  console.log('image')
+                }
+                console.log('Image Update Old File deleted!')
               }
-              console.log('Image Update Old File deleted!')
-            }
-          )
+            )
+          }
           // console.log(cekCoupon[0].coupon_img)
           // console.log(cekCoupon.length)
         } else {

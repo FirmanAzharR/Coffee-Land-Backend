@@ -21,7 +21,14 @@ const {
 router.get('/', authorization, getProductRedis, getProduct)
 router.get('/:id', authorization, getProductByIdRedis, getProductById)
 router.get('/productDetail/:id', authorization, getDetailProductById)
-router.post('/', authorization, isAdmin, uploadImg, postProduct)
+router.post(
+  '/',
+  authorization,
+  isAdmin,
+  clearDataProductRedis,
+  uploadImg,
+  postProduct
+)
 router.patch(
   '/:id',
   authorization,

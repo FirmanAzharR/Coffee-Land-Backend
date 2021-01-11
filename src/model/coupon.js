@@ -27,7 +27,6 @@ module.exports = {
         }
         !error ? resolve(insertResult) : reject(new Error(error))
       })
-      console.log(data)
     })
   },
   deleteCouponByIdModel: (id) => {

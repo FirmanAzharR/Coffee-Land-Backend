@@ -1,4 +1,9 @@
-const { getSubTotalMonth, dashboard } = require('../model/dashboard')
+const {
+  getSubTotalMonth,
+  getTransactionNow,
+  getTransactionYear,
+  totalTransaction
+} = require('../model/dashboard')
 // const redis = require('redis')
 // const client = redis.createClient()
 const helper = require('../helper/response')
@@ -16,7 +21,14 @@ module.exports = {
   },
   dashboard: async (request, response) => {
     try {
-      const result = await dashboard()
+      const today = await getTransactionNow()
+      const year = await getTransactionYear()
+      const totalTrans = await totalTransaction()
+      const result = {
+        today: today,
+        year: year,
+        total: totalTrans
+      }
       return helper.response(response, 200, 'success get dashboard', result)
     } catch (error) {
       return helper.response(response, 400, 'Bad Request', error)

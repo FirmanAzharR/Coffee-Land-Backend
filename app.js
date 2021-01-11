@@ -20,6 +20,7 @@ app.use((request, response, next) => {
   )
   next()
 })
+app.use(express.static('upload'))
 
 app.use('/', routesNavigation)
 app.get('*', (req, res) => {

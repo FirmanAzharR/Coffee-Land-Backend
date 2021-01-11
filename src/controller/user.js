@@ -17,7 +17,7 @@ module.exports = {
         user_email,
         user_phone,
         user_password: encryptPassword,
-        user_status: 1,
+        user_status: 2,
         user_img: 'none',
         user_created_at: new Date()
       }

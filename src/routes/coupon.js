@@ -15,8 +15,8 @@ const {
 } = require('../middleware/redis')
 const { authorization, isAdmin } = require('../middleware/auth')
 const uploadImg = require('../middleware/multer_coupon')
-router.get('/', authorization, getCuponRedis, getCoupon)
-router.get('/:id', authorization, getCuponByIdRedis, getCouponById)
+router.get('/', getCuponRedis, getCoupon)
+router.get('/:id', getCuponByIdRedis, getCouponById)
 router.post('/', authorization, isAdmin, clearCuponRedis, uploadImg, postCoupon)
 router.delete('/:id', authorization, isAdmin, clearCuponRedis, deleteCoupon)
 router.patch(

@@ -2,7 +2,7 @@ const { getCategoryModel } = require('../model/category')
 const redis = require('redis')
 const client = redis.createClient()
 const helper = require('../helper/response')
-//const helper = require('../helper/response')
+
 module.exports = {
   getCategory: async (request, response) => {
     try {

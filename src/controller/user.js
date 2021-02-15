@@ -2,7 +2,8 @@ const bcrypt = require('bcrypt')
 const helper = require('../helper/response')
 const jwt = require('jsonwebtoken')
 const { registerUserModel, checkEmailModel } = require('../model/user')
-
+const nodemailer = require('nodemailer')
+const { updateProfileModel } = require('../model/profile')
 module.exports = {
   registerUser: async (request, response) => {
     try {
@@ -29,7 +30,6 @@ module.exports = {
         return helper.response(response, 200, 'success', result)
       }
     } catch (error) {
-      console.log(error)
       return helper.response(response, 400, 'bad request', error)
     }
   },
@@ -67,8 +67,50 @@ module.exports = {
         return helper.response(response, 400, 'email not registered')
       }
     } catch (error) {
-      console.log(error)
-      return helper.response(response, 400, 'email not registered', error)
+      return helper.response(response, 400, 'bad request', error)
+    }
+  },
+  forgotPass: async (request, response) => {
+    try {
+      const { email } = request.body
+      const checkMail = await checkEmailModel(email)
+      if (checkMail.length > 0) {
+        const id = checkMail[0].user_id
+        const tokenPass = {
+          key_reset: require('crypto').randomBytes(15).toString('hex')
+        }
+        const result = await updateProfileModel(tokenPass, id)
+        const transporter = nodemailer.createTransport({
+          service: 'gmail',
+          port: 587,
+          secure: false,
+          auth: {
+            user: `${process.env.EMAIL}`,
+            pass: `${process.env.PASS}`
+          }
+        })
+        const mailOPtion = {
+          from: `"CoffeeLand "${process.env.EMAIL}`,
+          to: `${email}`,
+          subject: `Hello ${email}`,
+          html: `<a href="http://localhost:8080/login?key=${result.key_reset}&page=reset">Click This link to update your password</a>`
+        }
+        transporter.sendMail(mailOPtion, (err, result) => {
+          if (err) {
+            return helper.response(response, 400, 'Error Send Email', err)
+          } else {
+            return helper.response(
+              response,
+              200,
+              'Check your email to renew your password'
+            )
+          }
+        })
+      } else {
+        return helper.response(response, 400, 'email not registered')
+      }
+    } catch (error) {
+      return helper.response(response, 400, 'bad request', error)
     }
   }
 }

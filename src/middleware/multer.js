@@ -41,12 +41,4 @@ const uploadFilter = (req, res, next) => {
   })
 }
 
-// const deleteImg = (req, res, next) => {
-//   fs.unlink('sample11.txt', function (err) {
-//     if (err) throw err
-//     // if no error, file has been deleted successfully
-//     console.log('File deleted!')
-//   })
-// }
-
 module.exports = uploadFilter

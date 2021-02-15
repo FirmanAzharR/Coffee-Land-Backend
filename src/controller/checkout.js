@@ -9,6 +9,7 @@ const { getDetailProductByIdModel } = require('../model/product')
 
 const dataCheckout = []
 let subTotalHarga = 0
+let transactionId = ''
 module.exports = {
   getCheckout: async (request, response) => {
     try {
@@ -155,45 +156,58 @@ module.exports = {
         customer_id,
         transaction_number,
         address,
-        id_payment
+        payment,
+        sub_total,
+        tax,
+        discount,
+        total
       } = request.body
       const transactionData = {
         customer_id,
         transaction_number,
         address,
-        id_payment,
-        subtotal: subTotalHarga,
+        payment,
+        sub_total,
+        tax,
+        discount,
+        total,
         transaction_created_at: new Date()
       }
       const transactionResult = await postCheckoutModel(transactionData)
-      const transactionId = transactionResult.transaction_id
-      const resultDt = []
-      for (let i = 0; i < dataCheckout.length; i++) {
-        const { id_product_detail, deliveryMethod, quantity } = dataCheckout[i]
+      transactionId = transactionResult.transaction_id
+      return helper.response(response, 200, 'Checkout success')
+    } catch (error) {
+      return helper.response(response, 400, 'Checkout failed', error)
+    }
+  },
+  postDetailCheckout: async (request, response) => {
+    try {
+      const data = request.body
+      for (let i = 0; i < data.length; i++) {
+        const { product_id, size, quantity, price, delivery } = data[i]
         const objectData = {
           transaction_id: transactionId,
-          id_product_detail,
+          product_id,
+          size,
           quantity,
-          deliveryMethod,
+          price,
+          delivery,
           detail_created_at: new Date()
         }
-        const detailTransResult = await postDataCheckoutModel(objectData)
-        const getProductId = await getDetailProductByIdModel(
-          objectData.id_product_detail
-        )
-        const updateStok = await updateStockModel(
-          getProductId[0].product_id,
-          objectData.quantity
-        )
-        resultDt.push(detailTransResult)
+        const result = await postDataCheckoutModel(objectData)
       }
 
-      return helper.response(response, 200, 'post Checkout success', [
-        transactionData,
-        resultDt
-      ])
+      return helper.response(response, 200, 'Check your transaction on history')
     } catch (error) {
-      console.log(error)
+      return helper.response(response, 400, 'Checkout failed', error)
     }
+
+    // const getProductId = await getDetailProductByIdModel(
+    //   objectData.id_product_detail
+    // )
+    // const updateStok = await updateStockModel(
+    //   getProductId[0].product_id,
+    //   objectData.quantity
+    // )
   }
 }

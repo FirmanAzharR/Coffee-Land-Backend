@@ -71,8 +71,6 @@ module.exports = {
         3600,
         JSON.stringify(newData)
       )
-
-      console.log(totalData)
       return helper.response(
         response,
         200,
@@ -129,11 +127,13 @@ module.exports = {
         product_name,
         product_discon,
         product_information,
+        product_size,
+        product_price,
         product_status,
         product_stock,
-        id_size,
-        product_price,
-        p_detail_status
+        delivery_hour_start,
+        delivery_hour_end,
+        delivery_methods
       } = request.body
 
       const dataProduct = {
@@ -141,37 +141,23 @@ module.exports = {
         product_name,
         product_discon,
         product_information,
+        product_size,
+        product_price,
         product_img: request.file === undefined ? '' : request.file.filename,
         product_created_at: new Date(),
         product_status,
-        product_stock
+        product_stock,
+        delivery_hour_start,
+        delivery_hour_end,
+        delivery_methods
       }
-      const resultDetails = []
       const resultProduct = await postProductModel(dataProduct)
-      const dt = {
-        id_product: resultProduct.product_id,
-        id_size: JSON.parse('[' + id_size + ']'),
-        product_price: JSON.parse('[' + product_price + ']'),
-        p_detail_created_at: new Date(),
-        p_detail_status
-      }
-
-      const countDataDetail = dt.id_size.length
-      console.log(countDataDetail)
-      for (let i = 0; i < countDataDetail; i++) {
-        const InsertDetail = await postDetailProductModel(
-          dt.id_product,
-          dt.id_size[i],
-          dt.product_price[i],
-          dt.p_detail_created_at,
-          dt.p_detail_status
-        )
-        resultDetails.push(InsertDetail)
-      }
-      helper.response(response, 200, 'Success Insert Data', [
-        resultProduct,
-        resultDetails
-      ])
+      helper.response(
+        response,
+        200,
+        `Success add ${dataProduct.product_name}`,
+        resultProduct
+      )
     } catch (error) {
       console.log(error)
       helper.response(response, 400, 'Bad Request', error)
@@ -185,8 +171,13 @@ module.exports = {
         product_name,
         product_discon,
         product_information,
+        product_size,
+        product_price,
         product_status,
-        product_stock
+        product_stock,
+        delivery_hour_start,
+        delivery_hour_end,
+        delivery_methods
       } = request.body
 
       let dataProduct = {
@@ -194,24 +185,31 @@ module.exports = {
         product_name,
         product_discon,
         product_information,
+        product_size,
+        product_price,
         product_img: request.file === undefined ? '' : request.file.filename,
-        product_created_at: new Date(),
+        product_updated_at: new Date(),
         product_status,
-        product_stock
+        product_stock,
+        delivery_hour_start,
+        delivery_hour_end,
+        delivery_methods
       }
       const checkId = await getProductByIdModel(id)
 
       if (checkId.length > 0) {
         if (dataProduct.product_img) {
-          fs.unlink(
-            `./upload/product/${checkId[0].product_img}`,
-            function (err) {
-              if (err) {
-                console.log('image')
+          if (checkId[0].product_img !== dataProduct.product_img) {
+            fs.unlink(
+              `./upload/product/${checkId[0].product_img}`,
+              function (err) {
+                if (err) {
+                  console.log('image')
+                }
+                console.log('Image Update Old File deleted!')
               }
-              console.log('Image Update Old File deleted!')
-            }
-          )
+            )
+          }
         } else {
           delete dataProduct.product_img
           console.log('Update without img!')
@@ -271,14 +269,8 @@ module.exports = {
             console.log('File deleted!')
           })
         }
-        const deleteDetail = await deleteDetailProductModel(id)
         const result = await deleteProductModel(data, id)
-        helper.response(
-          response,
-          200,
-          `Data by ID ${id} Deleted Successfully`,
-          result
-        )
+        helper.response(response, 200, 'Product Deleted Successfully', result)
       } else {
         helper.response(response, 400, `Product by id ${id} not found`)
       }

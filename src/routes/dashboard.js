@@ -5,4 +5,4 @@ module.exports = router
 
 const { getSubMonth, dashboard } = require('../controller/dashboard')
 router.get('/', authorization, isAdmin, dashboard)
-router.post('/filter', getSubMonth)
+router.get('/chart/:filter', getSubMonth)

@@ -3,9 +3,12 @@ const connection = require('../config/mysql')
 module.exports = {
   getCouponModel: () => {
     return new Promise((resolve, reject) => {
-      connection.query('SELECT*FROM coupon', (error, result) => {
-        !error ? resolve(result) : reject(new Error(error))
-      })
+      connection.query(
+        'SELECT*FROM coupon ORDER BY(`coupon_start`) DESC LIMIT 5',
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
     })
   },
   getCouponByIdModel: (id) => {

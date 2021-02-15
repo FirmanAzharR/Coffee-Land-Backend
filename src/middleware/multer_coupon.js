@@ -27,14 +27,19 @@ const limits = {
 const upload = multer({ storage, limits, fileFilter }).single('coupon_img')
 
 const uploadFilter = (req, res, next) => {
-  upload(req, res, function (err) {
-    if (err instanceof multer.MulterError) {
+  upload(req, res, function (error) {
+    if (error instanceof multer.MulterError) {
       // A Multer error occurred when uploading.
-      console.log(err.message)
-      return helper.response(res, 400, err.message)
-    } else if (err) {
+      return helper.response(
+        res,
+        400,
+        'Image file size to large',
+        error.message
+      )
+    } else if (error) {
+      console.log(error.message)
       // An unknown error occurred when uploading.
-      return helper.response(res, 400, err.message)
+      return helper.response(res, 400, error.message)
     }
     next()
     // Everything went fine.

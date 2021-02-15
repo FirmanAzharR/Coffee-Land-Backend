@@ -11,11 +11,10 @@ const helper = require('../helper/response')
 module.exports = {
   getSubMonth: async (request, response) => {
     try {
-      const { filter } = request.body
+      const { filter } = request.params
       const result = await getSubTotalMonth(filter)
       return helper.response(response, 200, 'Success Get Subtotal', result)
     } catch (error) {
-      console.log(error)
       return helper.response(response, 400, 'Bad Request', error)
     }
   },

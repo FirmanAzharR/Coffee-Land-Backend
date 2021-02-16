@@ -50,5 +50,36 @@ module.exports = {
         }
       )
     })
+  },
+  getOrderCountModel: () => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        'SELECT COUNT(*) AS total FROM transaction where date(transaction.transaction_created_at) = CURDATE()',
+        (error, result) => {
+          !error ? resolve(result[0].total) : reject(new Error(error))
+        }
+      )
+    })
+  },
+  getOrderModel: (limit, offset) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `SELECT*FROM transaction JOIN user ON transaction.customer_id = user.user_id where date(transaction.transaction_created_at) = CURDATE()
+order by transaction.transaction_id ASC LIMIT ${limit} offset ${offset}`,
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
+    })
+  },
+  MarkDoneModel: (id) => {
+    return new Promise((resolve, reject) => {
+      connection.query(
+        `UPDATE TRANSACTION SET status_confirm = 1 WHERE transaction_id = ${id}`,
+        (error, result) => {
+          !error ? resolve(result) : reject(new Error(error))
+        }
+      )
+    })
   }
 }

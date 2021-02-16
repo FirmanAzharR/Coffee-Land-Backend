@@ -3,14 +3,68 @@ const {
   getDataCheckoutModel,
   postCheckoutModel,
   postDataCheckoutModel,
-  updateStockModel
+  updateStockModel,
+  getOrderModel,
+  getOrderCountModel,
+  MarkDoneModel
 } = require('../model/checkout')
 const { getDetailProductByIdModel } = require('../model/product')
+const qs = require('querystring')
 
 const dataCheckout = []
 let subTotalHarga = 0
 let transactionId = ''
 module.exports = {
+  markDone: async (request, response) => {
+    try {
+      const { id } = request.body
+      const result = await MarkDoneModel(id)
+      return helper.response(response, 200, 'Order Confirmed', result)
+    } catch (error) {
+      return helper.response(response, 400, 'Bad request', error)
+    }
+  },
+  getOrder: async (request, response) => {
+    try {
+      let { page, limit } = request.query
+      page = parseInt(page)
+      limit = parseInt(limit)
+      let totalData
+      const offset = page * limit - limit
+      const result = await getOrderModel(limit, offset)
+      if (result) {
+        totalData = await getOrderCountModel()
+      } else {
+        return helper.response(response, 400, 'Get Order Empty', result)
+      }
+      const totalPage = Math.ceil(totalData / limit)
+
+      const prevLink =
+        page > 1
+          ? qs.stringify({ ...request.query, ...{ page: page - 1 } })
+          : null
+      const nextLink =
+        page < totalPage
+          ? qs.stringify({ ...request.query, ...{ page: page + 1 } })
+          : null
+      const pageInfo = {
+        page,
+        totalPage,
+        limit,
+        totalData,
+        nextLink: nextLink && `http://localhost:5000/product?${nextLink}`,
+        prevLink: prevLink && `http://localhost:5000/product?${prevLink}`
+      }
+      const newData = {
+        result,
+        pageInfo
+      }
+      return helper.response(response, 200, 'Success Get Order', newData)
+    } catch (error) {
+      console.log(error)
+      return helper.response(response, 400, 'Bad Request', error)
+    }
+  },
   getCheckout: async (request, response) => {
     try {
       const newOrderData = []

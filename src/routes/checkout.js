@@ -8,7 +8,9 @@ const {
   removeItem,
   editItem,
   postDataCheckout,
-  postDetailCheckout
+  postDetailCheckout,
+  getOrder,
+  markDone
 } = require('../controller/checkout')
 
 router.post('/', authorization, getCheckout)
@@ -21,3 +23,5 @@ router.post(
   clearTransactionRedis,
   postDetailCheckout
 )
+router.get('/confirm/customer-order', authorization, getOrder)
+router.patch('/confirm/order-status', authorization, markDone)

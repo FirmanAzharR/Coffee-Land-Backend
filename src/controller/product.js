@@ -31,6 +31,7 @@ module.exports = {
       }
       let totalData
       const offset = page * limit - limit
+
       const result = await getProductModel(
         limit,
         offset,

@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 29, 2020 at 10:05 AM
+-- Generation Time: Feb 16, 2021 at 12:55 PM
 -- Server version: 10.4.14-MariaDB
 -- PHP Version: 7.2.33
 
@@ -52,8 +52,8 @@ INSERT INTO `category` (`id_category`, `category_name`, `category_created_at`, `
 
 CREATE TABLE `coupon` (
   `id_coupon` int(11) NOT NULL,
+  `coupon_name` varchar(100) NOT NULL,
   `coupon_code` varchar(10) NOT NULL,
-  `product_id` int(11) NOT NULL,
   `coupon_discon` int(11) NOT NULL,
   `cupon_min` int(11) NOT NULL,
   `cupon_max` int(11) NOT NULL,
@@ -62,19 +62,18 @@ CREATE TABLE `coupon` (
   `coupon_information` text NOT NULL,
   `coupon_created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `coupon_updated_at` datetime NOT NULL,
-  `coupon_status` int(1) NOT NULL
+  `coupon_status` int(1) NOT NULL,
+  `coupon_img` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `coupon`
 --
 
-INSERT INTO `coupon` (`id_coupon`, `coupon_code`, `product_id`, `coupon_discon`, `cupon_min`, `cupon_max`, `coupon_start`, `coupon_end`, `coupon_information`, `coupon_created_at`, `coupon_updated_at`, `coupon_status`) VALUES
-(1, 'GFYUMMY01', 15, 30, 30000, 25000, '2020-12-12', '2020-12-15', 'Coupon form postman 2', '2020-12-26 00:05:56', '2020-12-26 00:49:51', 1),
-(4, 'GFYUMMY02', 15, 25, 30000, 25000, '2020-12-12', '2020-12-15', 'Coupon form postman', '2020-12-27 16:24:15', '0000-00-00 00:00:00', 1),
-(5, 'GFYUMMY03', 15, 25, 30000, 25000, '2020-12-12', '2020-12-15', 'Coupon form postman', '2020-12-27 16:24:21', '0000-00-00 00:00:00', 1),
-(6, 'GFYUMMY04', 15, 25, 30000, 25000, '2020-12-12', '2020-12-15', 'Coupon form postman', '2020-12-27 16:24:25', '0000-00-00 00:00:00', 1),
-(7, 'GFYUMMY05', 15, 25, 30000, 25000, '2020-12-12', '2020-12-15', 'Coupon form postman', '2020-12-28 08:08:06', '0000-00-00 00:00:00', 1);
+INSERT INTO `coupon` (`id_coupon`, `coupon_name`, `coupon_code`, `coupon_discon`, `cupon_min`, `cupon_max`, `coupon_start`, `coupon_end`, `coupon_information`, `coupon_created_at`, `coupon_updated_at`, `coupon_status`, `coupon_img`) VALUES
+(27, 'Coupon Sepcial Red velvet', 'GFINTN3', 30, 30000, 25000, '2021-01-09', '2021-01-10', 'Coupon Sepcial Red velvet for you', '2021-01-11 15:44:00', '2021-01-11 22:40:15', 1, '2021-01-11T15-40-15.479Zredvelvet.jpg'),
+(28, 'Coupon For Cappucino Coffee', 'CAP123', 20, 30000, 20000, '2021-01-10', '2021-01-11', 'Coupon For Cappucino Coffee', '2021-01-11 17:51:32', '0000-00-00 00:00:00', 1, '2021-01-11T10-51-32.115Zcoba.png'),
+(31, 'Cold Brew Coffee Coupon', 'CLD123', 20, 15000, 10000, '2021-01-11', '2021-01-11', 'Cold Brew Coffee Coupon', '2021-01-11 22:41:44', '0000-00-00 00:00:00', 1, '2021-01-11T15-41-44.381Zcoldbrew.png');
 
 -- --------------------------------------------------------
 
@@ -88,104 +87,25 @@ CREATE TABLE `product` (
   `product_name` varchar(100) NOT NULL,
   `product_discon` int(11) NOT NULL,
   `product_information` text NOT NULL,
+  `product_size` varchar(10) NOT NULL,
+  `product_price` int(11) NOT NULL,
   `product_img` varchar(100) NOT NULL,
   `product_created_at` datetime NOT NULL DEFAULT current_timestamp(),
   `product_updated_at` datetime NOT NULL,
   `product_status` int(1) NOT NULL,
-  `product_stock` int(11) DEFAULT NULL
+  `product_stock` int(11) NOT NULL,
+  `delivery_hour_start` varchar(5) NOT NULL,
+  `delivery_hour_end` varchar(5) NOT NULL,
+  `delivery_methods` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `product`
 --
 
-INSERT INTO `product` (`product_id`, `category_id`, `product_name`, `product_discon`, `product_information`, `product_img`, `product_created_at`, `product_updated_at`, `product_status`, `product_stock`) VALUES
-(35, 1, 'Cold Brew x', 10, 'This product updated 1', '2020-12-27T17-46-37.019Zimage 22.png', '2020-12-28 00:47:08', '0000-00-00 00:00:00', 1, 10),
-(36, 2, 'Red Velvet 4', 0, 'this product Red Velvet inserted from posman', '', '2020-12-26 20:39:51', '0000-00-00 00:00:00', 1, -2),
-(37, 3, 'Vegetable Mix', 0, 'this product Red Velvet inserted from posman', '', '2020-12-26 20:40:30', '0000-00-00 00:00:00', 1, 10),
-(38, 3, 'Ayam Katsu', 0, 'this product Red Velvet inserted from posman', '', '2020-12-26 20:40:40', '0000-00-00 00:00:00', 1, 10),
-(39, 3, 'Rice Bowl', 0, 'this product Red Velvet inserted from posman', '', '2020-12-26 20:41:01', '0000-00-00 00:00:00', 1, 10),
-(40, 3, 'Rice Box', 0, 'this product Red Velvet inserted from posman', '', '2020-12-26 20:41:23', '0000-00-00 00:00:00', 1, 10),
-(41, 3, 'Fried Rice', 0, 'this product Red Velvet inserted from posman', '', '2020-12-26 20:41:31', '0000-00-00 00:00:00', 1, 10),
-(42, 2, 'Vanila late', 0, 'this product Red Velvet inserted from posman', '', '2020-12-26 20:41:40', '0000-00-00 00:00:00', 1, 10),
-(44, 2, 'Lemon Tea', 0, 'this product Red Velvet inserted from posman', '', '2020-12-26 20:41:55', '0000-00-00 00:00:00', 1, 10),
-(45, 1, 'Cold Brew', 0, 'this product Red Velvet inserted from posman', '', '2020-12-26 20:42:26', '0000-00-00 00:00:00', 1, 10),
-(46, 1, 'Coffe Capucino', 0, 'this product Red Velvet inserted from posman', '', '2020-12-26 20:42:55', '0000-00-00 00:00:00', 1, 10),
-(47, 1, 'Coffe Special', 0, 'this product Red Velvet inserted from posman', '', '2020-12-26 20:43:07', '0000-00-00 00:00:00', 1, 10),
-(48, 1, 'Coffe Special 2', 0, 'this product Red Velvet inserted from posman', '', '2020-12-26 20:43:11', '0000-00-00 00:00:00', 1, 10),
-(49, 1, 'coba', 10, 'This product updated 1', '2020-12-27T17-36-14.423Zcoldbrew.png', '2020-12-28 00:36:14', '0000-00-00 00:00:00', 1, 10);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `product_details`
---
-
-CREATE TABLE `product_details` (
-  `id_product_detail` int(11) NOT NULL,
-  `id_product` int(11) DEFAULT NULL,
-  `id_size` int(11) DEFAULT NULL,
-  `product_price` int(11) DEFAULT NULL,
-  `p_detail_created_at` datetime DEFAULT NULL,
-  `p_detail_updated_at` datetime DEFAULT NULL,
-  `p_detail_status` int(1) DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `product_details`
---
-
-INSERT INTO `product_details` (`id_product_detail`, `id_product`, `id_size`, `product_price`, `p_detail_created_at`, `p_detail_updated_at`, `p_detail_status`) VALUES
-(48, 35, 1, 20000, '2020-12-24 20:43:52', NULL, 1),
-(49, 35, 2, 30000, '2020-12-24 20:43:52', NULL, 1),
-(50, 36, 1, 20000, '2020-12-26 20:39:51', NULL, 1),
-(51, 36, 2, 30000, '2020-12-26 20:39:51', NULL, 1),
-(52, 37, 1, 27000, '2020-12-26 20:40:30', NULL, 1),
-(53, 37, 2, 35000, '2020-12-26 20:40:30', NULL, 1),
-(54, 38, 1, 27000, '2020-12-26 20:40:40', NULL, 1),
-(55, 38, 2, 35000, '2020-12-26 20:40:40', NULL, 1),
-(56, 39, 1, 27000, '2020-12-26 20:41:01', NULL, 1),
-(57, 39, 2, 35000, '2020-12-26 20:41:01', NULL, 1),
-(58, 40, 1, 27000, '2020-12-26 20:41:23', NULL, 1),
-(59, 40, 2, 35000, '2020-12-26 20:41:23', NULL, 1),
-(60, 41, 1, 27000, '2020-12-26 20:41:31', NULL, 1),
-(61, 41, 2, 35000, '2020-12-26 20:41:31', NULL, 1),
-(62, 42, 1, 27000, '2020-12-26 20:41:40', NULL, 1),
-(63, 42, 2, 35000, '2020-12-26 20:41:40', NULL, 1),
-(66, 44, 1, 27000, '2020-12-26 20:41:55', NULL, 1),
-(67, 44, 2, 35000, '2020-12-26 20:41:55', NULL, 1),
-(68, 45, 1, 20000, '2020-12-26 20:42:26', NULL, 1),
-(69, 45, 2, 25000, '2020-12-26 20:42:26', NULL, 1),
-(70, 46, 1, 20000, '2020-12-26 20:42:56', NULL, 1),
-(71, 46, 2, 25000, '2020-12-26 20:42:56', NULL, 1),
-(72, 47, 1, 20000, '2020-12-26 20:43:07', NULL, 1),
-(73, 47, 2, 25000, '2020-12-26 20:43:07', NULL, 1),
-(74, 48, 1, 20000, '2020-12-26 20:43:11', NULL, 1),
-(75, 48, 2, 25000, '2020-12-26 20:43:11', NULL, 1);
-
--- --------------------------------------------------------
-
---
--- Table structure for table `size`
---
-
-CREATE TABLE `size` (
-  `size_id` int(11) NOT NULL,
-  `size_name` varchar(3) NOT NULL,
-  `size_information` text NOT NULL,
-  `size_created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `size_updated_at` datetime NOT NULL,
-  `size_status` int(1) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
-
---
--- Dumping data for table `size`
---
-
-INSERT INTO `size` (`size_id`, `size_name`, `size_information`, `size_created_at`, `size_updated_at`, `size_status`) VALUES
-(1, 'R', 'Regular size', '2020-12-16 08:48:29', '0000-00-00 00:00:00', 1),
-(2, 'L', 'Large size', '2020-12-16 08:48:32', '0000-00-00 00:00:00', 1),
-(3, 'XL', 'Extra Large', '2020-12-16 08:48:35', '0000-00-00 00:00:00', 1);
+INSERT INTO `product` (`product_id`, `category_id`, `product_name`, `product_discon`, `product_information`, `product_size`, `product_price`, `product_img`, `product_created_at`, `product_updated_at`, `product_status`, `product_stock`, `delivery_hour_start`, `delivery_hour_end`, `delivery_methods`) VALUES
+(70, 2, 'Red Velvet', 20, 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Est quia, culpa veritatis dicta aperiam adipisci iusto odio debitis fuga itaque unde. Ab dolore dolorem id eius? Esse eaque eveniet voluptates?\nLorem ipsum dolor sit amet consectetur adipisicing elit. Est quia, culpa veritatis dicta aperiam adipisci iusto odio debitis fuga itaque unde. Ab dolore dolorem id eius? Esse eaque eveniet voluptates?\nLorem ipsum dolor sit amet consectetur adipisicing elit. Est quia, culpa veritatis dicta aperiam adipisci iusto odio debitis fuga itaque unde. Ab dolore dolorem id eius? Esse eaque eveniet voluptates?', '1,2,3', 23000, '2021-02-13T06-27-12.083Z2021-01-12T13-13-00.470Zredvelvet.jpg', '2021-02-13 13:12:19', '2021-02-13 14:22:56', 1, 10, '10:00', '14:00', '1,2,3'),
+(78, 1, 'Cold Brew', 10, 'Lorem ipsum dolor sit amet consectetur adipisicing elit. Est quia, culpa veritatis dicta aperiam adipisci iusto odio debitis fuga itaque unde. Ab dolore dolorem id eius? Esse eaque eveniet voluptates? Lorem ipsum dolor sit amet consectetur adipisicing elit. Est quia, culpa veritatis dicta aperiam adipisci iusto odio debitis fuga itaque unde. Ab dolore dolorem id eius? Esse eaque eveniet voluptates? Lorem ipsum dolor sit amet consectetur adipisicing elit. Est quia, culpa veritatis dicta aperiam adipisci iusto odio debitis fuga itaque unde. Ab dolore dolorem id eius? Esse eaque eveniet voluptates?', '1,3,2', 30000, '2021-02-11T17-25-04.261Z2021-01-06T03-36-12.974Zcoldbrew.png', '2021-02-13 12:39:52', '2021-02-16 15:42:08', 1, 20, '09:00', '13:00', '1,3');
 
 -- --------------------------------------------------------
 
@@ -196,22 +116,31 @@ INSERT INTO `size` (`size_id`, `size_name`, `size_information`, `size_created_at
 CREATE TABLE `transaction` (
   `transaction_id` int(11) NOT NULL,
   `customer_id` int(11) NOT NULL,
-  `transaction_number` int(11) NOT NULL,
+  `transaction_number` varchar(5) NOT NULL,
   `address` text NOT NULL,
-  `id_payment` int(3) NOT NULL,
-  `subtotal` int(11) NOT NULL,
-  `transaction_created_at` datetime NOT NULL DEFAULT current_timestamp()
+  `payment` varchar(50) NOT NULL,
+  `sub_total` int(11) NOT NULL,
+  `tax` int(11) NOT NULL,
+  `discount` int(11) NOT NULL,
+  `total` int(11) NOT NULL,
+  `transaction_created_at` datetime NOT NULL DEFAULT current_timestamp(),
+  `status_confirm` int(11) NOT NULL DEFAULT 0
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `transaction`
 --
 
-INSERT INTO `transaction` (`transaction_id`, `customer_id`, `transaction_number`, `address`, `id_payment`, `subtotal`, `transaction_created_at`) VALUES
-(2, 3, 541245, 'Sleman, Yogyakarta', 1, 60000, '2020-11-01 00:26:22'),
-(3, 3, 541245, 'Sleman, Yogyakarta', 1, 60000, '2020-12-28 00:27:38'),
-(4, 3, 541245, 'Sleman, Yogyakarta', 1, 60000, '2020-12-29 00:27:40'),
-(5, 3, 541245, 'Sleman, Yogyakarta', 1, 60000, '2020-12-29 00:27:41');
+INSERT INTO `transaction` (`transaction_id`, `customer_id`, `transaction_number`, `address`, `payment`, `sub_total`, `tax`, `discount`, `total`, `transaction_created_at`, `status_confirm`) VALUES
+(40, 14, 'feNZz', 'Jl. Purbaya, No.109, Warak Kidul, Sumberadi, Mlati, Sleman, Yogyakarta, Indonesia', 'Cash on delivery', 139000, 10000, 25000, 124000, '2021-01-10 14:37:55', 1),
+(42, 14, '8DAAv', 'Jl. Purbaya, No.109, Warak Kidul, Sumberadi, Mlati, Sleman, Yogyakarta, Indonesia', 'Cash on delivery', 20000, 10000, 4000, 26000, '2021-02-12 00:59:33', 1),
+(45, 14, 'tcSdZ', 'Jl. Purbaya, No.109, Warak Kidul, Sumberadi, Mlati, Sleman, Yogyakarta, Indonesia', 'Card', 27000, 10000, 5400, 31600, '2021-03-12 09:36:02', 0),
+(46, 14, '0wk9x', 'Jl. Purbaya, No.109, Warak Kidul, Sumberadi, Mlati, Sleman, Yogyakarta, Indonesia', 'Cash on delivery', 20000, 10000, 0, 30000, '2021-02-12 21:24:18', 0),
+(47, 14, 'DR4Oz', 'Jl. Purbaya, No.109, Warak Kidul, Sumberadi, Mlati, Sleman, Yogyakarta, Indonesia', 'Card', 27000, 10000, 0, 37000, '2020-02-12 22:35:47', 0),
+(48, 14, 'DR4Oz', 'Jl. Purbaya, No.109, Warak Kidul, Sumberadi, Mlati, Sleman, Yogyakarta, Indonesia', 'Card', 27000, 10000, 0, 37000, '2019-02-12 22:35:47', 0),
+(49, 15, 'DR4Oz', 'Jl. Purbaya, No.109, Warak Kidul, Sumberadi, Mlati, Sleman, Yogyakarta, Indonesia', 'Card', 27000, 10000, 0, 37000, '2021-02-16 00:35:32', 1),
+(50, 15, 'ODmuC', 'Jl. Purbaya, No.109, Warak Kidul, Sumberadi, Mlati, Sleman, Yogyakarta, Indonesia', 'Card', 81000, 10000, 16200, 74800, '2021-02-16 00:35:28', 1),
+(51, 15, 'UN3TR', 'Jl. Purbaya, No.109, Warak Kidul, Sumberadi, Mlati, Sleman, Yogyakarta, Indonesia', 'Cash on delivery', 36800, 10000, 7360, 39440, '2021-02-16 08:32:27', 0);
 
 -- --------------------------------------------------------
 
@@ -222,9 +151,11 @@ INSERT INTO `transaction` (`transaction_id`, `customer_id`, `transaction_number`
 CREATE TABLE `transaction_details` (
   `detail_id` int(11) NOT NULL,
   `transaction_id` int(11) NOT NULL,
-  `id_product_detail` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `size` varchar(5) NOT NULL,
   `quantity` int(11) NOT NULL,
-  `deliveryMethod` varchar(50) NOT NULL,
+  `price` int(11) NOT NULL,
+  `delivery` varchar(50) NOT NULL,
   `detail_created_at` datetime NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
@@ -232,15 +163,20 @@ CREATE TABLE `transaction_details` (
 -- Dumping data for table `transaction_details`
 --
 
-INSERT INTO `transaction_details` (`detail_id`, `transaction_id`, `id_product_detail`, `quantity`, `deliveryMethod`, `detail_created_at`) VALUES
-(3, 2, 50, 2, 'Door Delivery', '2020-12-29 00:26:22'),
-(4, 2, 50, 1, 'Door Delivery', '2020-12-29 00:26:22'),
-(5, 3, 50, 2, 'Door Delivery', '2020-12-29 00:27:38'),
-(6, 3, 50, 1, 'Door Delivery', '2020-12-29 00:27:38'),
-(7, 4, 50, 2, 'Door Delivery', '2020-12-29 00:27:40'),
-(8, 4, 50, 1, 'Door Delivery', '2020-12-29 00:27:40'),
-(9, 5, 50, 2, 'Door Delivery', '2020-12-29 00:27:41'),
-(10, 5, 50, 1, 'Door Delivery', '2020-12-29 00:27:42');
+INSERT INTO `transaction_details` (`detail_id`, `transaction_id`, `product_id`, `size`, `quantity`, `price`, `delivery`, `detail_created_at`) VALUES
+(52, 40, 35, 'R', 1, 25000, 'Dine In', '2021-02-10 14:37:56'),
+(53, 40, 35, 'L', 1, 28500, 'Dine In', '2021-02-10 14:37:56'),
+(54, 40, 70, 'R', 1, 25000, 'Dine In', '2021-02-10 14:37:56'),
+(55, 40, 70, 'L', 1, 28500, 'Dine In', '2021-02-10 14:37:56'),
+(56, 40, 70, 'XL', 1, 32000, 'Dine In', '2021-02-10 14:37:56'),
+(58, 42, 70, 'R', 1, 20000, 'Dine In', '2021-02-12 00:59:33'),
+(62, 45, 78, 'R', 1, 27000, 'Dine In', '2021-02-12 09:36:02'),
+(63, 46, 70, 'R', 1, 20000, 'Dine In', '2021-02-12 21:24:18'),
+(64, 47, 78, 'R', 1, 27000, 'Dine In', '2021-02-12 22:35:47'),
+(65, 48, 78, 'R', 1, 27000, 'Dine In', '2021-02-12 22:35:47'),
+(66, 49, 78, 'R', 1, 27000, 'Dine In', '2021-02-12 22:35:47'),
+(67, 50, 78, 'R', 2, 54000, 'Dine In', '2021-02-15 10:35:38'),
+(68, 51, 70, 'R', 2, 36800, 'Dine In', '2021-02-16 08:32:27');
 
 -- --------------------------------------------------------
 
@@ -252,22 +188,26 @@ CREATE TABLE `user` (
   `user_id` int(11) NOT NULL,
   `user_role` int(11) NOT NULL,
   `user_name` varchar(50) NOT NULL,
+  `first_name` varchar(50) NOT NULL,
+  `last_name` varchar(50) NOT NULL,
+  `user_address` varchar(255) NOT NULL,
   `user_email` varchar(100) NOT NULL,
   `user_phone` varchar(15) NOT NULL,
   `user_password` varchar(150) NOT NULL,
   `user_status` int(11) NOT NULL,
   `user_img` varchar(50) NOT NULL,
   `user_created_at` datetime NOT NULL DEFAULT current_timestamp(),
-  `user_updated_at` datetime NOT NULL
+  `user_updated_at` datetime NOT NULL,
+  `key_reset` varchar(255) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Dumping data for table `user`
 --
 
-INSERT INTO `user` (`user_id`, `user_role`, `user_name`, `user_email`, `user_phone`, `user_password`, `user_status`, `user_img`, `user_created_at`, `user_updated_at`) VALUES
-(4, 2, 'Alifia', 'alifia@gmail.com', '085123456789', '$2b$10$vVLhKAd2.jKYG6BiBFiIhe6T4ajhzby4ADLiSgm1EEw21M9UZRt6W', 1, 'none', '2020-12-24 18:55:33', '0000-00-00 00:00:00'),
-(5, 1, 'Firman update 2', 'firmanazhar14@gmail.com', '083122494953', '$2b$10$01TaKbAi8ChJ/rNCsyU1De1LnPJMEZWWG7xWW939iJ70qTQCoq3CG', 1, 'none', '2020-12-29 00:05:08', '0000-00-00 00:00:00');
+INSERT INTO `user` (`user_id`, `user_role`, `user_name`, `first_name`, `last_name`, `user_address`, `user_email`, `user_phone`, `user_password`, `user_status`, `user_img`, `user_created_at`, `user_updated_at`, `key_reset`) VALUES
+(14, 1, 'Firman Azhar R', 'Firman', 'Azhar Riyadi', 'Jl. Purbaya, No.109, Warak Kidul, Sumberadi, Mlati, Sleman, Yogyakarta, Indonesia', 'firmanazhar14@gmail.com', '083122494952', '$2b$10$XTyRGcApwlG4z4poJvk.0uI6Rry.X7lf8GkgdgZcPG/WLc7TeZQF.', 2, '2021-02-11T18-44-12.461Zprofile.PNG', '2021-02-06 12:43:07', '2021-02-12 09:18:57', 'f398c1673ffb2152964a054c77d68d'),
+(15, 2, 'Alifia Intan', 'Alifia', 'Intan', 'Warak Kidul, Sumberadi, Mlati, Sleman, Yogyakarta, Indonesia', 'alifia@gmail.com', '087657452132', '$2b$10$YWTDHfPH3lq95z5Gnm1L3e/5nJH3gXM0fLnG1OcASiGZsKby6DLam', 2, '2021-02-13T08-25-42.348Zalucard.jpg', '2021-02-13 14:57:13', '2021-02-13 15:25:42', '');
 
 --
 -- Indexes for dumped tables
@@ -293,20 +233,6 @@ ALTER TABLE `product`
   ADD KEY `category_id` (`category_id`);
 
 --
--- Indexes for table `product_details`
---
-ALTER TABLE `product_details`
-  ADD KEY `id_product_detail` (`id_product_detail`),
-  ADD KEY `id_product` (`id_product`),
-  ADD KEY `id_size` (`id_size`);
-
---
--- Indexes for table `size`
---
-ALTER TABLE `size`
-  ADD PRIMARY KEY (`size_id`);
-
---
 -- Indexes for table `transaction`
 --
 ALTER TABLE `transaction`
@@ -317,7 +243,7 @@ ALTER TABLE `transaction`
 --
 ALTER TABLE `transaction_details`
   ADD PRIMARY KEY (`detail_id`),
-  ADD KEY `id_product_detail` (`id_product_detail`),
+  ADD KEY `id_product_detail` (`product_id`),
   ADD KEY `transaction_id` (`transaction_id`);
 
 --
@@ -340,66 +266,40 @@ ALTER TABLE `category`
 -- AUTO_INCREMENT for table `coupon`
 --
 ALTER TABLE `coupon`
-  MODIFY `id_coupon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `id_coupon` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=34;
 
 --
 -- AUTO_INCREMENT for table `product`
 --
 ALTER TABLE `product`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=55;
-
---
--- AUTO_INCREMENT for table `product_details`
---
-ALTER TABLE `product_details`
-  MODIFY `id_product_detail` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=82;
-
---
--- AUTO_INCREMENT for table `size`
---
-ALTER TABLE `size`
-  MODIFY `size_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
 
 --
 -- AUTO_INCREMENT for table `transaction`
 --
 ALTER TABLE `transaction`
-  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `transaction_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=52;
 
 --
 -- AUTO_INCREMENT for table `transaction_details`
 --
 ALTER TABLE `transaction_details`
-  MODIFY `detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `detail_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=69;
 
 --
 -- AUTO_INCREMENT for table `user`
 --
 ALTER TABLE `user`
-  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `user_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `product`
---
-ALTER TABLE `product`
-  ADD CONSTRAINT `product_ibfk_1` FOREIGN KEY (`category_id`) REFERENCES `category` (`id_category`);
-
---
--- Constraints for table `product_details`
---
-ALTER TABLE `product_details`
-  ADD CONSTRAINT `product_details_ibfk_1` FOREIGN KEY (`id_product`) REFERENCES `product` (`product_id`),
-  ADD CONSTRAINT `product_details_ibfk_2` FOREIGN KEY (`id_size`) REFERENCES `size` (`size_id`);
-
---
 -- Constraints for table `transaction_details`
 --
 ALTER TABLE `transaction_details`
-  ADD CONSTRAINT `transaction_details_ibfk_1` FOREIGN KEY (`id_product_detail`) REFERENCES `product_details` (`id_product_detail`),
   ADD CONSTRAINT `transaction_details_ibfk_2` FOREIGN KEY (`transaction_id`) REFERENCES `transaction` (`transaction_id`);
 COMMIT;
 

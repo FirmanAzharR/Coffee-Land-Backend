@@ -4,7 +4,7 @@
 
 ## Project
 
-The CoffeeLand Rest API was created to complement the backend for the Coffee Shop project - (CoffeeLand)
+Coffeeland is an application developed to sell food and beverages in Coffeeland cafes. This application was developed using Express Js on the backend and Vue Js on the frontend.
 
 ## Built With
 

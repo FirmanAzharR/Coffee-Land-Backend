@@ -22,7 +22,6 @@ app.use((request, response, next) => {
 })
 app.use('/api1', routesNavigation)
 app.use('/api1/fileUploadsApi1', express.static('upload'))
-app.use(express.static('upload'))
 
 app.use('/', routesNavigation)
 app.get('*', (req, res) => {

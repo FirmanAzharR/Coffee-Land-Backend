@@ -9,7 +9,6 @@ const redis = require('redis')
 const client = redis.createClient()
 const helper = require('../helper/response')
 const fs = require('fs')
-const { Console } = require('console')
 module.exports = {
   getCoupon: async (request, response) => {
     try {

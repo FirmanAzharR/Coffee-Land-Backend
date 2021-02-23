@@ -149,8 +149,8 @@ module.exports = {
         product_updated_at: new Date(),
         product_status,
         product_stock,
-        delivery_hour_start,
-        delivery_hour_end,
+        delivery_hour_start: delivery_hour_start.substr(0, 5),
+        delivery_hour_end: delivery_hour_end.substr(0, 5),
         delivery_methods
       }
       const resultProduct = await postProductModel(dataProduct)

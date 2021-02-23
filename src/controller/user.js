@@ -75,6 +75,8 @@ module.exports = {
     try {
       const { email } = request.body
       const checkMail = await checkEmailModel(email)
+      console.log(email)
+      console.log(checkMail)
       if (checkMail.length > 0) {
         const id = checkMail[0].user_id
         const tokenPass = {

@@ -21,6 +21,7 @@ module.exports = {
       const result = await MarkDoneModel(id)
       return helper.response(response, 200, 'Order Confirmed', result)
     } catch (error) {
+      console.log(error)
       return helper.response(response, 400, 'Bad request', error)
     }
   },

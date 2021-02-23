@@ -75,7 +75,7 @@ order by transaction.transaction_id ASC LIMIT ${limit} offset ${offset}`,
   MarkDoneModel: (id) => {
     return new Promise((resolve, reject) => {
       connection.query(
-        `UPDATE TRANSACTION SET status_confirm = 1 WHERE transaction_id = ${id}`,
+        `UPDATE transaction SET status_confirm = 1 WHERE transaction_id = ${id}`,
         (error, result) => {
           !error ? resolve(result) : reject(new Error(error))
         }

@@ -96,7 +96,7 @@ module.exports = {
           from: `"CoffeeLand "${process.env.EMAIL}`,
           to: `${email}`,
           subject: `Hello ${email}`,
-          html: `<a href="http://localhost:8080/login?key=${result.key_reset}&page=reset">Click This link to update your password</a>`
+          html: `<a href="https://coffeeland-shop.netlify.app/login?key=${result.key_reset}&page=reset">Click This link to update your password</a>`
         }
         transporter.sendMail(mailOPtion, (err, result) => {
           if (err) {

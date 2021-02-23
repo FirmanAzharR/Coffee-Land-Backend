@@ -30,6 +30,7 @@ module.exports = {
         return helper.response(response, 200, 'success', result)
       }
     } catch (error) {
+      console.log(error)
       return helper.response(response, 400, 'bad request', error)
     }
   },

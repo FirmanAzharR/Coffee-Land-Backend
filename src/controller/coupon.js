@@ -62,6 +62,7 @@ module.exports = {
       coupon_end,
       coupon_information,
       coupon_created_at: new Date(),
+      coupon_updated_at: new Date(),
       coupon_status,
       coupon_img: request.file === undefined ? '' : request.file.filename
     }

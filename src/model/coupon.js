@@ -26,16 +26,10 @@ module.exports = {
     return new Promise((resolve, reject) => {
       connection.query('INSERT INTO coupon SET ?', data, (error, result) => {
         const insertResult = {
+          id_coupon: result.insertId,
           ...data
         }
-        //!error ? resolve(insertResult) : reject(new Error(error))
-        if (!error) {
-          console.log(result)
-          resolve(insertResult)
-        } else {
-          console.log(error)
-          //reject(new Error(error))
-        }
+        !error ? resolve(insertResult) : reject(new Error(error))
       })
     })
   },

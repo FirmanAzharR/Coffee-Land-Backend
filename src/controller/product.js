@@ -146,6 +146,7 @@ module.exports = {
         product_price,
         product_img: request.file === undefined ? '' : request.file.filename,
         product_created_at: new Date(),
+        product_updated_at: new Date(),
         product_status,
         product_stock,
         delivery_hour_start,

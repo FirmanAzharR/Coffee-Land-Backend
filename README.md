@@ -1,6 +1,6 @@
 # ExpressJS - CoffeeLand RESTfull API
 
-![gambar](cover.PNG)
+![gambar](cover.jpg)
 
 ## Project
 
@@ -36,6 +36,8 @@ DB_USERS='root'
 DB_PASS=''
 DB_NAME='coffeeland'
 DB_TIME='UTC'
+EMAIL=admin@gmail.com
+PASS=admin
 
 ```
 
